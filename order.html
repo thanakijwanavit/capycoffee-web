@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Freebird — Capycoffee</title>
+  <meta name="description" content="Order Freebird beans: roast profile, roast timing, grind, bag size, quantity. Optional brew method and tasting cup.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/favicon.svg" alt="">
+        Capycoffee
+      </a>
+      <nav aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="roasts.html">Roast profiles</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a class="order-link" href="order.html" aria-current="page">Order Freebird</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="wrap section">
+    <p class="kicker">Bean desk</p>
+    <h1>Write a Freebird ticket</h1>
+    <p class="lede">Same SKU every time. Choose a roast, a window, a grind, a bag. This demo stores the ticket in <code>sessionStorage</code> only — no payment, no account.</p>
+    <div class="order-layout">
+      <form id="order-form" action="#" method="post" novalidate>
+        <fieldset>
+          <legend>Roast profile <span aria-hidden="true">*</span></legend>
+          <div class="choice-row">
+            <label class="choice">
+              <input type="radio" name="roast" value="Young Capy 1.0" required>
+              <span>Young Capy 1.0 <small>Light · peach, jasmine</small></span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="roast" value="Adult Capy 3.0">
+              <span>Adult Capy 3.0 <small>Medium · honey, almond</small></span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="roast" value="Grandpa Capy 5.0">
+              <span>Grandpa Capy 5.0 <small>Dark · molasses, cedar</small></span>
+            </label>
+          </div>
+        </fieldset>
+        <label class="stack" for="timing">Roast timing <span aria-hidden="true">*</span></label>
+        <select id="timing" name="timing" required>
+          <option value="" disabled selected>Choose a roast window</option>
+          <option value="Today 16:00 ICT">Today 16:00 ICT</option>
+          <option value="Tomorrow morning">Tomorrow morning</option>
+          <option value="This weekend">This weekend</option>
+          <option value="Next weekday drop">Next weekday drop</option>
+        </select>
+        <p class="error-msg" id="timing-error">Pick a roast window.</p>
+        <label class="stack" for="grind">Grind <span aria-hidden="true">*</span></label>
+        <select id="grind" name="grind" required>
+          <option value="" disabled selected>Choose a grind</option>
+          <option value="Whole bean">Whole bean (recommended)</option>
+          <option value="Espresso">Espresso</option>
+          <option value="Pour-over / filter">Pour-over / filter</option>
+          <option value="AeroPress">AeroPress</option>
+          <option value="French press">French press</option>
+        </select>
+        <p class="error-msg">Pick a grind.</p>
+        <fieldset>
+          <legend>Bag size <span aria-hidden="true">*</span></legend>
+          <div class="choice-row">
+            <label class="choice"><input type="radio" name="size" value="150g" required> <span>150g <small>Tasting week</small></span></label>
+            <label class="choice"><input type="radio" name="size" value="250g"> <span>250g <small>House bag</small></span></label>
+            <label class="choice"><input type="radio" name="size" value="500g"> <span>500g <small>Share the soak</small></span></label>
+          </div>
+        </fieldset>
+        <label class="stack" for="qty">Quantity <span aria-hidden="true">*</span></label>
+        <div class="qty">
+          <button type="button" data-qty="-1" aria-label="Decrease quantity">−</button>
+          <input id="qty" name="qty" type="number" min="1" max="12" value="1" required inputmode="numeric">
+          <button type="button" data-qty="1" aria-label="Increase quantity">+</button>
+        </div>
+        <label class="stack" for="brew">Brew method <span class="meta">(optional)</span></label>
+        <select id="brew" name="brew">
+          <option value="">No note</option>
+          <option value="V60">V60</option>
+          <option value="Batch brew">Batch brew</option>
+          <option value="Espresso">Espresso</option>
+          <option value="AeroPress">AeroPress</option>
+          <option value="French press">French press</option>
+          <option value="Milk drink">Milk drink</option>
+        </select>
+        <label class="choice" style="margin: 1rem 0;">
+          <input type="checkbox" name="cup" value="Tasting cup">
+          <span>Add a tasting cup <small>Optional sidecar for the first pour. Beans stay primary.</small></span>
+        </label>
+        <button class="btn btn-primary" type="submit">Print ticket</button>
+      </form>
+      <aside class="ticket" aria-live="polite" id="ticket">
+        <p class="ticket-empty">No ticket yet. Fill the counter slip and we will stamp a session number here.</p>
+      </aside>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Capycoffee bean desk · Freebird only</p>
+      <p>Client-side demo · sessionStorage</p>
+    </div>
+  </footer>
+  <script src="js/order.js"></script>
+</body>
+</html>
