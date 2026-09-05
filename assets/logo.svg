@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 48" role="img" aria-labelledby="logoTitle">
+  <title id="logoTitle">Capycoffee</title>
+  <rect x="2" y="4" width="40" height="40" rx="12" fill="#147A86"/>
+  <circle cx="22" cy="28" r="11" fill="#D4A574"/>
+  <ellipse cx="15" cy="22" rx="5.5" ry="4.2" fill="#C48B5A"/>
+  <ellipse cx="29" cy="22" rx="5.5" ry="4.2" fill="#C48B5A"/>
+  <circle cx="18" cy="28" r="1.5" fill="#3D2416"/>
+  <circle cx="26" cy="28" r="1.5" fill="#3D2416"/>
+  <ellipse cx="22" cy="32.5" rx="2.6" ry="1.4" fill="#8B5A3C"/>
+  <path d="M14 16c1.4-4 5.5-5.5 8-2.6 2.5-2.9 6.6-1.4 8 2.6" fill="none" stroke="#F7F1E6" stroke-width="1.8" stroke-linecap="round"/>
+  <text x="54" y="32" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700" fill="#3D2416">Capycoffee</text>
+</svg>
