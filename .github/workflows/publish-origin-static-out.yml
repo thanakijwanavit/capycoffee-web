@@ -1,28 +1,29 @@
 name: Publish Origin static out release
 on:
+  workflow_dispatch:
   push:
     branches: [publish/origin-static-out]
     paths:
-      - ".release-staging/**"
       - ".github/workflows/publish-origin-static-out.yml"
-  workflow_dispatch:
+      - ".release-staging/SOURCE_URL.txt"
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - name: Rebuild tarball, verify SHA256, create release
+      - name: Download static export tarball
+        run: |
+          set -euo pipefail
+          curl -fsSL -o capycoffee-out.tar.gz "https://litter.catbox.moe/p416g9.gz"
+          echo "2540b893bf40262ef33a42ba6b4ae912c99418bd9945b3cb9e9c7cfde2533c69  capycoffee-out.tar.gz" | sha256sum -c
+      - name: Create GitHub Release with asset
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          cat .release-staging/capycoffee-out.tar.gz.b64.* > /tmp/out.b64
-          base64 -d /tmp/out.b64 > capycoffee-out.tar.gz
-          echo "2540b893bf40262ef33a42ba6b4ae912c99418bd9945b3cb9e9c7cfde2533c69  capycoffee-out.tar.gz" | sha256sum -c
           gh release delete origin-static-out-20260907 --repo thanakijwanavit/capycoffee-web --yes 2>/dev/null || true
-          git push origin :refs/tags/origin-static-out-20260907 2>/dev/null || true
+          git push "https://x-access-token:${GH_TOKEN}@github.com/thanakijwanavit/capycoffee-web.git" :refs/tags/origin-static-out-20260907 2>/dev/null || true
           gh release create origin-static-out-20260907 capycoffee-out.tar.gz \
             --repo thanakijwanavit/capycoffee-web \
             --title "Origin static export for Capycoffee demo S3" \
