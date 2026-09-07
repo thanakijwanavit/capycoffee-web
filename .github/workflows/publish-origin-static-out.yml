@@ -12,19 +12,27 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
       - name: Download static export tarball
         run: |
           set -euo pipefail
-          curl -fsSL -o capycoffee-out.tar.gz "https://litter.catbox.moe/p416g9.gz"
-          echo "2540b893bf40262ef33a42ba6b4ae912c99418bd9945b3cb9e9c7cfde2533c69  capycoffee-out.tar.gz" | sha256sum -c
+          URL=$(tr -d '[:space:]' < .release-staging/SOURCE_URL.txt)
+          EXPECTED=$(tr -d '[:space:]' < .release-staging/SHA256.txt)
+          curl -fsSL --retry 5 --retry-delay 2 -o capycoffee-out.tar.gz "$URL"
+          echo "${EXPECTED}  capycoffee-out.tar.gz" | sha256sum -c
+          tar -tzf capycoffee-out.tar.gz | grep -E '(^|./)index\.html$' >/dev/null
+          tar -tzf capycoffee-out.tar.gz | grep '_next/static' >/dev/null
       - name: Create GitHub Release with asset
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          gh release delete origin-static-out-20260907 --repo thanakijwanavit/capycoffee-web --yes 2>/dev/null || true
-          git push "https://x-access-token:${GH_TOKEN}@github.com/thanakijwanavit/capycoffee-web.git" :refs/tags/origin-static-out-20260907 2>/dev/null || true
-          gh release create origin-static-out-20260907 capycoffee-out.tar.gz \
+          TAG=$(tr -d '[:space:]' < .release-staging/RELEASE_TAG.txt)
+          TITLE=$(tr -d '\n' < .release-staging/RELEASE_TITLE.txt)
+          NOTES=$(cat .release-staging/RELEASE_NOTES.md)
+          gh release delete "$TAG" --repo thanakijwanavit/capycoffee-web --yes 2>/dev/null || true
+          git push "https://x-access-token:${GH_TOKEN}@github.com/thanakijwanavit/capycoffee-web.git" ":refs/tags/${TAG}" 2>/dev/null || true
+          gh release create "$TAG" capycoffee-out.tar.gz \
             --repo thanakijwanavit/capycoffee-web \
-            --title "Origin static export for Capycoffee demo S3" \
-            --notes "SHA256 2540b893bf40262ef33a42ba6b4ae912c99418bd9945b3cb9e9c7cfde2533c69 ; extract yields index.html at archive root"
+            --title "$TITLE" \
+            --notes "$NOTES"
