@@ -1,14 +1,22 @@
 # Capycoffee web
 
-Static marketing + bean-order demo for **Capycoffee** (Ichiran-style coffee, rotating SKU **Freebird**).
+Static export of the Capycoffee Next.js shop (Ichiran-style ticket, rotating SKU **Freebird** from **Chiang Mai, Thailand**).
+
+This repo’s `main` is the unzipped `out/` from `next build` (`output: 'export'`), plus `infra/` for S3/CloudFront.
+
+## Product (this build)
+
+- Named Kaffelogic **roast profiles**: Young Capy, Adult Capy, Grandpa Capy
+- **Roast level**: continuous Light–Dark slider (1.0–5.0)
+- **Whole beans only** (no grind)
+- Optional tasting cup, bag size, quantity
 
 ## Pages
 
-- `index.html` — home
-- `roasts.html` — Young Capy 1.0 / Adult Capy 3.0 / Grandpa Capy 5.0
-- `about.html` — Kaffelogic Nano 7
-- `order.html` — client-side ticket (`sessionStorage`)
-- `404.html` — CloudFront custom error target
+- `/` — Freebird hero and order ticket
+- `/about/` — brand + origin
+- `/roast/` — Kaffelogic bay and named profiles
+- `/order/thanks/` — mock ticket confirmation
 
 ## Local
 
@@ -18,6 +26,10 @@ python3 -m http.server 8765
 
 Open http://127.0.0.1:8765/
 
+## Release zip
+
+GitHub Release tag `origin-static-out-20260908` attaches `out.zip` (index.html at archive root).
+
 ## AWS (intended)
 
-Private S3 bucket `capycoffee-demo-<accountid>` + CloudFront OAC. Deploy `infra/s3-cloudfront.yaml` from a principal that can `s3:CreateBucket` and `cloudfront:CreateDistribution` (the Cloud Agent user `cursor-cloud-partner-api` cannot).
+Private S3 bucket + CloudFront OAC. Deploy `infra/s3-cloudfront.yaml` from a principal that can create the bucket and distribution. Do not deploy from this publish step.
