@@ -1,28 +1,29 @@
-# Origin static export staging (base64 + hex)
+# Origin static export staging (hex shards)
 
-Partial upload on branch `publish/origin-static-out`.
+These files are ASCII hex encodings of base64 text chunks of the Origin static export tarball.
 
-## Verified raw base64 (use as-is)
-- `capycoffee-out.tar.gz.b64.00.a.00`–`.18`, `00.a.tR`
-- `capycoffee-out.tar.gz.b64.00.b.00`–`.12`, `.14`–`.20`, `.22`
-- Prefer `00.b.21.hex` over corrupt raw `00.b.21`
-- Raw `00.b.13` and `00.b.23` are CORRUPT — reconstruct from pack 000 hex
+## Preferred layout
 
-## Hex encoding
-ASCII hex of base64 text (`[0-9a-f]`). Decode:
-```python
-from pathlib import Path
-Path('out.b64').write_bytes(bytes.fromhex(Path('file.hex').read_text()))
+- `capycoffee-out.tar.gz.b64.pack.NNN.tKK.hex` — 1000-char hex shards (packs 001+)
+- Pack 000 special: `pack.000.a.hex`, `b0.hex`, `b1.hex`, `c0.hex`, `c1.hex`, `d.hex` (ignore whole `b.hex`/`c.hex` if present)
+
+## Status
+
+- Packs **000–002** verified on branch `publish/origin-static-out`
+- Remaining: packs **003–087** as `pack.NNN.tKK.hex`
+- Ignore: `pack.001.s0.hex` (corrupt), whole `pack.000.b.hex` / `pack.000.c.hex`
+
+## Reassembly
+
+```bash
+# 1) Concat hex shards for each pack in order
+cat .release-staging/capycoffee-out.tar.gz.b64.pack.001.t*.hex > pack001.hex
+# 2) Hex -> ASCII base64 fragment
+python3 -c "import pathlib; pathlib.Path('pack001.b64').write_text(bytes.fromhex(pathlib.Path('pack001.hex').read_text()).decode())"
+# 3) Concat all base64 fragments in pack/piece order, then:
+base64 -d < all.b64 > capycoffee-out.tar.gz
 ```
 
-## Pack 000 (concat of 00.b.13 + 00.b.23 + 00.b.24 + 00.b.25)
-Order: `pack.000.a.hex` + `b0` + `b1` + `c0` + `c1` + `d.hex`
-(Ignore broken `pack.000.b.hex` / `pack.000.c.hex` if present.)
+Also present: verified raw base64 pieces under `capycoffee-out.tar.gz.b64.00.a.*` and `00.b.*`. Prefer `.hex` packs for corrupted raw ranges.
 
-Split sizes: a/d = 8000 hex; b0/b1/c0/c1 = 4000 hex each.
-
-## Upload protocol
-Prefer ≤4000 hex chars per file via Github MCP; verify md5 after each upload.
-
-## binprobe2.bin
-Absent (nothing to delete).
+`binprobe2.bin` is not used.
